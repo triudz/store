@@ -1,0 +1,105 @@
+/* --- Global Styles --- */
+body {
+    background-color: #f4f6f9; /* Màu nền xám xanh nhạt để làm nổi bật các khối */
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex; /* Căn giữa card form bằng Flexbox */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    min-height: 100vh; /* Chiếm toàn bộ chiều cao của màn hình */
+    margin: 0; /* Xóa lề mặc định của body */
+    padding: 20px; /* Thêm một chút padding cho màn hình nhỏ */
+}
+
+/* --- The Main Card/Block (Khối Form Chính) --- */
+.register-card {
+    background-color: #ffffff; /* Nền trắng cho khối form */
+    border: 2px solid #e1e4e8; /* Viền mỏng màu xám xung quanh khối */
+    border-radius: 10px; /* Bo tròn các góc của khối */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Bóng đổ mềm để tạo hiệu ứng nổi */
+    padding: 30px;
+    width: 100%;
+    max-width: 420px; /* Chiều rộng tối đa của khối form */
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng width */
+}
+
+/* --- Heading (Tiêu đề khối) --- */
+.register-card h2 {
+    text-align: center;
+    color: #333333;
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e1e4e8; /* Thêm một đường gạch dưới khối tiêu đề */
+    font-size: 24px;
+}
+
+/* --- Form Groups (Từng khối riêng cho mỗi trường nhập) --- */
+.form-group {
+    margin-bottom: 18px; /* Khoảng cách giữa các khối nhập */
+}
+
+/* --- Labels (Nhãn chữ xám nhỏ trên các ô nhập) --- */
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #6a737d; /* Màu xám tắt cho nhãn */
+    font-size: 13px;
+    text-transform: uppercase; /* Viết hoa toàn bộ cho phong cách hiện đại */
+    letter-spacing: 0.5px;
+}
+
+/* --- Input Fields (Các ô nhập liệu dạng khối bo tròn) --- */
+.form-control {
+    width: 100%; /* Chiếm toàn bộ chiều rộng của khối form-group */
+    padding: 12px; /* Padding bên trong để chữ không bị dính sát viền */
+    border: 2px solid #dde1e5; /* Viền đậm cho khối nhập liệu */
+    border-radius: 6px; /* Bo góc nhẹ cho các khối nhập */
+    font-size: 15px;
+    color: #444444;
+    box-sizing: border-box; /* Rất quan trọng để width không bị tính sai */
+    transition: all 0.2s ease-in-out; /* Tạo hiệu ứng mượt khi focus */
+}
+
+/* --- Input Field Focus (Khối Màu sắc khi click vào) --- */
+.form-control:focus {
+    border-color: #0366d6; /* Chuyển màu viền khối sang xanh dương khi click */
+    outline: none; /* Xóa viền outline mặc định của trình duyệt */
+    box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.15); /* Hiệu ứng bóng phát sáng xanh dương */
+}
+
+/* --- Textarea specific (Đảm bảo khối địa chỉ trông ngăn nắp) --- */
+textarea.form-control {
+    resize: vertical; /* Chỉ cho phép kéo dãn theo chiều dọc */
+}
+
+/* --- Button (Khối nút bấm chính) --- */
+.btn-block-primary {
+    width: 100%;
+    padding: 12px;
+    background-color: #0366d6; /* Khối màu xanh dương chủ đạo */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+}
+
+.btn-block-primary:hover {
+    background-color: #0056b3; /* Chuyển sang khối màu xanh đậm khi di chuột */
+}
+
+/* --- Error Messages (Khối thông báo lỗi màu đỏ) --- */
+.error-msg-block {
+    background-color: #ffdce0;
+    color: #86181d;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid #cea0a5;
+    text-align: center;
+    font-size: 14px;
+}
