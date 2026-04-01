@@ -49,6 +49,7 @@
     </table>
 
     <div style="margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px;">
+        <a th:href="@{/}" class="btn-block-primary" style="width: auto; padding: 12px 25px; text-decoration: none; text-align: center;">Tiếp tục mua hàng </a>
         <a th:if="${!#lists.isEmpty(cartItems)}" th:href="@{/checkout}" class="btn-block-primary" style="width: auto; padding: 12px 25px; text-decoration: none; text-align: center;">Thanh toán ngay</a>
     </div>
 </div>

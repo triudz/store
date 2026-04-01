@@ -67,7 +67,7 @@ public class CartController {
         }
 
         redirectAttributes.addFlashAttribute("success", "Đã thêm " + product.getName() + " vào giỏ hàng!");
-        return "redirect:/cart";
+        return "redirect:/";
     }
 
     // 2. TẠO HÀM MỚI: Cập nhật số lượng trực tiếp trong giỏ hàng
