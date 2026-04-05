@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thanh Toán Đơn Hàng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container-large">
+    <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Thanh toán đơn hàng</h2>
+
+    <form th:action="@{/checkout}" method="get" style="margin-bottom: 20px; padding: 15px; background: #e9ecef; border-radius: 5px;">
+        Nhập mã giảm giá:
+        <input type="text" name="voucherCode" placeholder="VD: FREESHIP" style="padding: 5px; width: 200px;">
+        <button type="submit" style="padding: 6px 15px; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer;">Áp dụng</button>
+        <span th:if="${voucherMessage}" th:text="${voucherMessage}" style="margin-left: 10px; font-weight: bold; color: #dc3545;"></span>
+    </form>
+
+    <table border="1" style="width: 100%; text-align: center; border-collapse: collapse;">
+        <tr style="background: #f8f9fa;">
+            <th>Sản phẩm</th><th>Số lượng</th><th>Đơn giá</th>
+        </tr>
+        <tr th:each="item : ${cartItems}">
+            <td th:text="${item.product.name}"></td>
+            <td th:text="${item.quantity}"></td>
+            <td th:text="${item.product.price} + ' ₫'"></td>
+        </tr>
+    </table>
+
+    <div style="margin-top: 20px; text-align: right; font-size: 18px;">
+        <p>Tổng tiền hàng: <span th:text="${subTotal} + ' ₫'"></span></p>
+        <p style="color: green;">Giảm giá: -<span th:text="${discount} + ' ₫'"></span></p>
+        <h3 style="color: #ee4d2d;">Thanh toán: <span th:text="${finalTotal} + ' ₫'"></span></h3>
+    </div>
+
+    <form th:action="@{/checkout/place-order}" method="post" style="text-align: right; margin-top: 20px;">
+        <input type="hidden" name="finalTotal" th:value="${finalTotal}">
+        <input type="hidden" name="appliedVoucherId" th:value="${appliedVoucherId}">
+        <a th:href="@{/cart}" style="margin-right: 15px; text-decoration: none; color: gray;">&larr; Quay lại giỏ hàng</a>
+        <button type="submit" class="btn-block-primary" style="width: auto; padding: 12px 30px;">XÁC NHẬN ĐẶT HÀNG</button>
+    </form>
+</div>
+</body>
+</html>

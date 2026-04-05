@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Mã Giảm Giá</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="container-large">
+    <h2>Quản lý Mã Giảm Giá (Admin)</h2>
+    <a th:href="@{/admin}" style="color: blue;">&larr; Quay lại bảng điều khiển</a>
+
+    <div th:if="${success}" style="color: green; margin: 10px 0;" th:text="${success}"></div>
+    <div th:if="${error}" style="color: red; margin: 10px 0;" th:text="${error}"></div>
+
+    <form th:action="@{/admin/vouchers/add}" th:object="${newVoucher}" method="post" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px;">
+        <h3>Tạo mã mới</h3>
+        Mã Code: <input type="text" th:field="*{code}" required style="margin-right: 10px;">
+        Giảm (VNĐ): <input type="number" th:field="*{discountAmount}" required style="margin-right: 10px;">
+        Số lượng: <input type="number" th:field="*{usageLimit}" required style="margin-right: 10px;">
+        Ngày hết hạn: <input type="date" th:field="*{expiryDate}" required style="margin-right: 10px;">
+        <button type="submit" class="btn-block-primary" style="width: auto;">Thêm mã</button>
+    </form>
+
+    <table border="1" style="width: 100%; margin-top: 20px; text-align: center; border-collapse: collapse;">
+        <tr style="background: #eee;">
+            <th>Mã Code</th>
+            <th>Giảm (VNĐ)</th>
+            <th>Lượt dùng còn</th>
+            <th>Hạn sử dụng</th>
+        </tr>
+        <tr th:each="v : ${vouchers}">
+            <td th:text="${v.code}" style="font-weight: bold; color: #ee4d2d;"></td>
+            <td th:text="${v.discountAmount}"></td>
+            <td th:text="${v.usageLimit}"></td>
+            <td th:text="${v.expiryDate}"></td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
