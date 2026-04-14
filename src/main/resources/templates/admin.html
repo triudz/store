@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Bảng Điều Khiển Quản Trị</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body { margin: 0; background-color: #f4f6f9; }
+        .admin-layout { display: flex; min-height: 100vh; }
+
+        /* Cột Menu bên trái */
+        .sidebar { width: 250px; background-color: #343a40; color: white; padding: 20px 0; }
+        .sidebar h2 { text-align: center; color: #28a745; margin-bottom: 30px; }
+        .sidebar a { display: block; color: #adb5bd; padding: 15px 20px; text-decoration: none; border-bottom: 1px solid #495057; }
+        .sidebar a:hover { color: white; background-color: #495057; }
+        .sidebar .active { background-color: #0366d6; color: white; }
+
+        /* Cột nội dung bên phải */
+        .main-content { flex: 1; padding: 30px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #0366d6;}
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+            Xin chào,<br><b th:text="${session.loggedInUser.fullName}" style="color: #fff;"></b>
+        </div>
+
+        <a href="/admin" class="active">🏠 Bảng điều khiển</a>
+        <a href="/admin/products">📦 Quản lý Sản phẩm</a>
+        <a href="/admin/orders">📜 Quản lý Đơn hàng</a>
+        <a href="/admin/revenue">💰 Quản lý Doanh thu</a>
+        <a href="#">👥 Quản lý Khách hàng</a>
+        <a href="/admin/vouchers">🎫 Quản lý Mã giảm giá</a>
+
+        <a th:href="@{/logout}" style="color: #ff6b6b; margin-top: 50px; border-top: 1px solid #495057;">🚪 Đăng xuất</a>
+    </div>
+
+    <div class="main-content">
+        <h1 style="color: #333; margin-bottom: 30px;">Tổng quan hệ thống</h1>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div class="stat-card" style="border-top-color: #0366d6;">
+                <h3 style="color: #6c757d; margin-top: 0;">Tổng đơn hàng</h3>
+                <p style="font-size: 28px; font-weight: bold; color: #333; margin: 10px 0;">1,245</p>
+            </div>
+
+            <div class="stat-card" style="border-top-color: #28a745;">
+                <h3 style="color: #6c757d; margin-top: 0;">Doanh thu tháng</h3>
+                <p style="font-size: 28px; font-weight: bold; color: #333; margin: 10px 0;">50.000.000 ₫</p>
+            </div>
+
+            <div class="stat-card" style="border-top-color: #dc3545;">
+                <h3 style="color: #6c757d; margin-top: 0;">Sản phẩm sắp hết</h3>
+                <p style="font-size: 28px; font-weight: bold; color: #333; margin: 10px 0;">12</p>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <h3>Hướng dẫn sử dụng:</h3>
+            <p>- Bạn có thể click vào <b>Quản lý Mã giảm giá</b> ở cột bên trái để thử nghiệm tính năng tạo mã Code mới nhé!</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tạp Hóa Online</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .product-image { width: 160px; height: 160px; object-fit: cover; border-radius: 10px; display: block; margin: 0 auto 15px auto; border: 1px solid #eee; }
+        .product-card { transition: transform 0.2s; border: 1px solid #ddd; padding: 15px; border-radius: 12px; text-align: center; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 6px 15px rgba(0,0,0,0.1) !important; }
+
+        /* Bố cục chia 2 phần: Trái (Lọc) - Phải (Sản phẩm) */
+        .main-layout { display: flex; gap: 30px; margin-top: 20px; align-items: flex-start; }
+
+        /* CSS cho cột Bộ Lọc bên trái (Nhỏ gọn) */
+        .sidebar-filter { width: 220px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #ddd; position: sticky; top: 20px; }
+        .sidebar-filter h3 { margin-top: 0; color: #333; border-bottom: 2px solid #0366d6; padding-bottom: 8px; font-size: 16px; font-weight: bold; }
+        .filter-group { margin-bottom: 12px; }
+        .filter-group label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 13px; color: #555;}
+        .filter-group select, .filter-group input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 13px; }
+        .btn-filter { width: 100%; padding: 10px; background: #ee4d2d; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; font-size: 14px; }
+        .btn-filter:hover { background: #d73a1e; }
+
+        /* Cột bên phải */
+        .right-content { flex: 1; }
+
+        /* Thanh tìm kiếm ở trên cùng cột phải */
+        .search-container { display: flex; justify-content: center; margin-bottom: 30px; }
+        .search-box { display: flex; width: 100%; max-width: 600px; gap: 10px; }
+        .search-box input { flex: 1; padding: 12px 20px; border: 2px solid #0366d6; border-radius: 25px; outline: none; font-size: 15px; }
+        .search-box button { padding: 10px 30px; background-color: #0366d6; color: white; border: none; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 15px; }
+
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+        /* --- CSS CHO THANH PHÂN TRANG (Nằm giữa, tạo nút đẹp) --- */
+        .pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin: 40px 0 60px 0; width: 100%; }
+        .page-item { padding: 8px 16px; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #555; background: white; font-size: 14px; transition: all 0.2s; }
+        .page-item:hover { background: #f1f1f1; border-color: #ccc; }
+        .page-item.active { background: #0366d6; color: white; border-color: #0366d6; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="container-large">
+    <header style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e1e4e8; padding-bottom: 10px;">
+        <h1>🛒 Cửa Hàng Tạp Hóa</h1>
+        <div>
+            <a th:href="@{/cart}" style="margin-right: 15px; font-weight: bold; color: #ee4d2d;">Giỏ hàng 🛒</a>
+            <a th:if="${session.loggedInUser}" th:href="@{/history}" style="margin-right: 15px; text-decoration: none; color: #333; font-weight: bold;">Lịch sử mua hàng 📜</a>
+            <a th:if="${session.loggedInUser != null && session.loggedInUser.role == 'ADMIN'}" th:href="@{/admin}" style="margin-right: 15px; color: #28a745; font-weight: bold;">⚙️ Quản trị</a>
+            <span th:if="${session.loggedInUser}" th:text="'Chào, ' + ${session.loggedInUser.fullName}"></span>
+            <a th:if="${session.loggedInUser}" th:href="@{/logout}" style="margin-left: 10px;">Đăng xuất</a>
+            <a th:unless="${session.loggedInUser}" th:href="@{/login}" class="btn-block-primary" style="padding: 8px 15px; width: auto; display: inline-block; text-decoration: none;">Đăng nhập</a>
+        </div>
+    </header>
+
+    <div th:if="${success}" style="background-color: #d4edda; color: #155724; padding: 12px; border-radius: 6px; margin-top: 15px; text-align: center;" th:text="${success}"></div>
+    <div th:if="${error}" class="error-msg-block" style="margin-top: 15px;" th:text="${error}"></div>
+
+    <div class="main-layout">
+
+        <aside class="sidebar-filter">
+            <h3>⚙️ Lọc Sản Phẩm</h3>
+            <form th:action="@{/}" method="get">
+                <input type="hidden" name="keyword" th:value="${keyword}">
+
+                <div class="filter-group">
+                    <label>Danh mục</label>
+                    <select name="categoryId">
+                        <option value="-1" th:selected="${categoryId == -1}">-- Tất cả --</option>
+                        <option value="1" th:selected="${categoryId == 1}">🍹 Đồ uống</option>
+                        <option value="2" th:selected="${categoryId == 2}">🍬 Bánh kẹo</option>
+                        <option value="3" th:selected="${categoryId == 3}">🧂 Gia vị</option>
+                        <option value="4" th:selected="${categoryId == 4}">🍟 Đồ ăn vặt</option>
+                        <option value="5" th:selected="${categoryId == 5}">🍜 Thực phẩm khô</option>
+                        <option value="6" th:selected="${categoryId == 6}">🥛 Sữa</option>
+                        <option value="7" th:selected="${categoryId == 7}">🥫 Đồ hộp</option>
+                        <option value="8" th:selected="${categoryId == 8}">🧴 Hóa mỹ phẩm</option>
+                        <option value="9" th:selected="${categoryId == 9}">🧻 Đồ gia dụng</option>
+                        <option value="10" th:selected="${categoryId == 10}">🍎 Rau củ quả</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Giá thấp nhất</label>
+                    <input type="number" name="minPrice" th:value="${minPrice}" placeholder="Từ 0 ₫" min="0">
+                </div>
+
+                <div class="filter-group">
+                    <label>Giá cao nhất</label>
+                    <input type="number" name="maxPrice" th:value="${maxPrice}" placeholder="Đến ... ₫" min="0">
+                </div>
+
+                <button type="submit" class="btn-filter">Áp Dụng Bộ Lọc</button>
+            </form>
+        </aside>
+
+        <main class="right-content">
+
+            <div class="search-container">
+                <form th:action="@{/}" method="get" class="search-box">
+                    <input type="hidden" name="categoryId" th:value="${categoryId}">
+                    <input type="hidden" name="minPrice" th:value="${minPrice}">
+                    <input type="hidden" name="maxPrice" th:value="${maxPrice}">
+
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Tìm theo tên sản phẩm hoặc mã ID...">
+                    <button type="submit">🔍 Tìm kiếm</button>
+                </form>
+            </div>
+
+            <div class="product-grid">
+                <div class="product-card" th:each="p : ${products}">
+                    <img th:src="${p.imageUrl != null && p.imageUrl != '' ? p.imageUrl : 'https://via.placeholder.com/150?text=No+Image'}" class="product-image" alt="Sản phẩm">
+                    <h3 th:text="${p.name}" style="margin-bottom: 10px; height: 45px; overflow: hidden; font-size: 16px;"></h3>
+                    <p style="color: #ee4d2d; font-weight: bold; font-size: 18px;" th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></p>
+                    <p style="font-size: 12px; color: #6c757d; margin-bottom: 15px;">Mã: <span th:text="${p.id}"></span> | Kho: <span th:text="${p.stockQuantity}"></span></p>
+
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="productId" th:value="${p.id}">
+                        <div style="margin-bottom: 10px;">
+                            <input type="number" name="quantity" value="1" min="1" th:max="${p.stockQuantity}" style="width: 50px; padding: 5px; text-align: center; border: 1px solid #ccc; border-radius: 4px;">
+                        </div>
+                        <button type="submit" class="btn-block-primary" style="padding: 8px; font-size: 14px;">Thêm vào giỏ</button>
+                    </form>
+                </div>
+            </div> <div th:if="${#lists.isEmpty(products)}" style="text-align: center; padding: 50px; color: gray;">
+                <h3>Oops! Không tìm thấy sản phẩm nào phù hợp.</h3>
+            </div>
+
+            <div th:if="${totalPages > 1}" class="pagination-container">
+
+                <a th:if="${currentPage > 0}"
+                   th:href="@{/(page=${currentPage - 1}, keyword=${keyword}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                   class="page-item">&laquo; Trước</a>
+
+                <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                    <a th:href="@{/(page=${i}, keyword=${keyword}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                       th:text="${i + 1}"
+                       th:classappend="${i == currentPage} ? 'active' : ''"
+                       class="page-item">
+                    </a>
+                </span>
+
+                <a th:if="${currentPage < totalPages - 1}"
+                   th:href="@{/(page=${currentPage + 1}, keyword=${keyword}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice})}"
+                   class="page-item">Sau &raquo;</a>
+            </div>
+
+        </main>
+    </div>
+</div>
+</body>
+</html>

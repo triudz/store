@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký Tài khoản - Cửa hàng</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="register-card">
+    <h2>Tạo Tài khoản Mới</h2>
+
+    <div th:if="${error}" class="error-msg-block" th:text="${error}"></div>
+
+    <form th:action="@{/register}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label>Họ và tên</label>
+            <input type="text" class="form-control" th:field="*{fullName}" placeholder="VD: Nguyễn Văn A" required />
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-control" th:field="*{email}" placeholder="email@example.com" required />
+        </div>
+
+        <div class="form-group">
+            <label>Mật khẩu</label>
+            <input type="password" class="form-control" th:field="*{password}" placeholder="Tạo mật khẩu an toàn..." required />
+        </div>
+
+        <div class="form-group">
+            <label>Số điện thoại</label>
+            <input type="text" class="form-control" th:field="*{phone}" placeholder="0912..." />
+        </div>
+
+        <div class="form-group">
+            <label>Địa chỉ nhận hàng</label>
+            <textarea class="form-control" th:field="*{address}" rows="3" placeholder="Nhập địa chỉ của bạn..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-block-primary">Đăng ký ngay</button>
+    </form>
+</div>
+
+</body>
+</html>

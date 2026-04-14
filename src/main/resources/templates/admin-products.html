@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Sản phẩm - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background-color: #f4f7f6; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 250px; background-color: #343a40; padding: 20px 0; color: white; display: flex; flex-direction: column; }
+        .sidebar h2 { text-align: center; color: #28a745; margin-bottom: 20px; font-weight: bold; }
+        .sidebar-profile { text-align: center; padding-bottom: 20px; border-bottom: 1px solid #4f5962; margin-bottom: 20px; }
+        .sidebar a { color: #c2c7d0; text-decoration: none; padding: 12px 20px; display: block; font-size: 16px; }
+        .sidebar a:hover { background-color: #495057; color: white; }
+        .sidebar a.active { background-color: #007bff; color: white; }
+        .main-content { flex: 1; padding: 30px; }
+        .img-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; border: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+<div class="admin-layout">
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <div class="sidebar-profile">
+            Xin chào,<br>
+            <b><span th:text="${session.loggedInUser != null ? session.loggedInUser.fullName : 'Admin'}"></span></b>
+        </div>
+        <a href="/admin">🏠 Bảng điều khiển</a>
+        <a href="/admin/products" class="active">📦 Quản lý Sản phẩm</a>
+        <a href="/admin/orders">📜 Quản lý Đơn hàng</a>
+        <a href="/admin/revenue">💰 Quản lý Doanh thu</a>
+        <a href="#">👥 Quản lý Khách hàng</a>
+        <a href="/admin/vouchers">🎫 Quản lý Mã giảm giá</a>
+        <a th:href="@{/logout}" style="margin-top: auto; color: #e74c3c;">🚪 Đăng xuất</a>
+    </div>
+
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-primary">📦 Quản lý Sản phẩm</h2>
+            <a href="/admin/products/add" class="btn btn-success">+ Thêm Sản Phẩm Mới</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <table class="table table-hover table-striped mb-0 text-center align-middle">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Giá (VNĐ)</th>
+                        <th>Kho</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="p : ${products}">
+                        <td>
+                            <img th:src="${p.imageUrl != null && p.imageUrl != '' ? p.imageUrl : 'https://via.placeholder.com/60?text=No+Image'}" 
+                                 class="img-preview" alt="Lỗi ảnh">
+                        </td>
+                        <td th:text="${p.name}" class="fw-bold text-start"></td>
+                        <td th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'" class="text-danger fw-bold"></td>
+                        <td th:text="${p.stockQuantity}"></td>
+                        <td>
+                            <a th:href="@{/admin/products/edit/{id}(id=${p.id})}" class="btn btn-sm btn-warning">Sửa</a>
+                            <a th:href="@{/admin/products/delete/{id}(id=${p.id})}" class="btn btn-sm btn-danger" 
+                               onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này không?')">Xóa</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
